@@ -49,6 +49,7 @@ const ChatScreen = () => {
             <ShareAndSave link={latestLink}/>
             <FlatList
                 style={styles.chatContainer}
+                showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
                     padding: 16,
                     paddingBottom: 16,
