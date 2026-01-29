@@ -3,7 +3,7 @@ import React from 'react'
 import { COLORS } from '../colors'
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 
-const ShareAndSave = () => {
+const ShareAndSave = ({ link }) => {
     const onShare = async () => {
         try {
             const result = await Share.share({
@@ -33,6 +33,7 @@ const ShareAndSave = () => {
             <TouchableOpacity
                 style={styles.share}
                 onPress={() => onShare()}
+                activeOpacity={0.8}
             >
                 <EvilIcons name="share-apple" size={35} color="white" />
             </TouchableOpacity>
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
         height: 40,
         backgroundColor: COLORS.buttonBackground,
         borderWidth: 0.3,
-        borderColor: 'white',
+        borderColor: 'gray',
         borderRadius: 25,
         alignItems:'center',
         justifyContent: 'center',

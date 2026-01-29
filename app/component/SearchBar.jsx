@@ -57,12 +57,12 @@ const SearchBar = ({
                     editable={!disabled}
                 />
                 <TouchableOpacity
-                    style={[styles.button, disabled && styles.buttonDisabled]}
+                    style={[styles.button, disabled && { opacity: 0.5 }]}
                     onPress={handleSubmit}
                     disabled={disabled}
                     activeOpacity={0.8}
                 >
-                    <FontAwesome name="send" size={20} color="white" />
+                    <FontAwesome name="send" size={20} color={disabled ? "gray" : "white"} />
                 </TouchableOpacity>
             </View>
             <View style={styles.openGallery}>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: COLORS.buttonBackground,
         borderWidth: 0.3,
-        borderColor: 'white',
+        borderColor: 'gray',
         borderRadius: 25,
         paddingLeft: 20,
     },
@@ -115,29 +115,17 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: COLORS.buttonBackground,
         borderWidth: 0.3,
-        borderColor: "white",
+        borderColor: "gray",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 25,
-    },
-    buttonDisabled: {
-        flex: 1,
-        backgroundColor: COLORS.buttonBackground,
-        borderWidth: 0.3,
-        borderColor: "white",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    buttonText: {
-        color: "white",
-        fontSize: 16,
     },
     uploadBtn: {
         width: 50,
         height: 50,
         backgroundColor: COLORS.buttonBackground,
         borderWidth: 0.3,
-        borderColor: "white",
+        borderColor: "gray",
         borderRadius: 25,
         justifyContent: "center",
         alignItems: "center",

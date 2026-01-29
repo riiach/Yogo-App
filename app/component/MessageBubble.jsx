@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Image } from 'react-native'
+import {StyleSheet, Text, View, Image, Linking } from 'react-native'
 import React from 'react'
 import logo from '../../assets/images/yogo_logo.png'
 
@@ -48,6 +48,7 @@ const MessageBubble = ({role = "system", text, link, imageUri}) => {
                         style={[
                             styles.link,
                         ]}
+                        onPress={() => Linking.openURL(link)}
                     >{link}</Text>
                 }
                 {!!imageUri &&
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     },
     userPreview: {
         width: 320,
-        height: 80,
+        height: 100,
         borderBottomLeftRadius: 16,
         borderBottomRightRadius: 16,
     },

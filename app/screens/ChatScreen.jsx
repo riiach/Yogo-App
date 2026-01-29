@@ -25,7 +25,7 @@ const testMessages = [
         id: "4",
         role: "system",
         text: "This is Nike.",
-        link: "https://www.nike.gov.uk/",
+        link: "https://www.hyello.gov.uk/",
         imageUri: "https://images.pexels.com/photos/34719406/pexels-photo-34719406.jpeg"
     },
     {
@@ -38,6 +38,7 @@ const testMessages = [
 
 const ChatScreen = () => {
     const [message, setMessage] = React.useState(testMessages);
+    const latestLink = [...message].reverse().find(item => item.link)?.link;
 
     return (
         <KeyboardAvoidingView
@@ -45,7 +46,7 @@ const ChatScreen = () => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
         >
-            <ShareAndSave />
+            <ShareAndSave link={latestLink}/>
             <FlatList
                 style={styles.chatContainer}
                 contentContainerStyle={{
