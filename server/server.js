@@ -5,13 +5,25 @@ import axios from "axios";
 
 const app = express();
 const upload = multer();
-const client = new vision.ImageAnnotatorClient({
-    credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
-    projectId: process.env.GOOGLE_PROJECT_ID,
-});
+
+let client;
+
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+    // PRODUCTION: Use JSON credentials from environment variable
+    const credentials = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+    client = new vision.ImageAnnotatorClient({ credentials });
+    console.log('✅ Vision API initialized with JSON credentials (production)');
+} else if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+    // LOCAL: Use file path
+    client = new vision.ImageAnnotatorClient({
+        keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
+    });
+    console.log('✅ Vision API initialized with file path (local)');
+} else {
+    // FALLBACK: Default credentials
+    client = new vision.ImageAnnotatorClient();
+    console.log('✅ Vision API initialized with default credentials');
+}
 
 app.use(express.json()); // <-- IMPORTANT
 
