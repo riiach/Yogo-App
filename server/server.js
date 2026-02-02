@@ -7,7 +7,7 @@ import cors from "cors";
 const app = express();
 
 app.use(cors({
-    origin: "https://darkslateblue-meerkat-555658.hostingersite.com/",
+    origin: "https://darkslateblue-meerkat-555658.hostingersite.com",
     methods: ["GET","POST","OPTIONS"],
 }));
 
