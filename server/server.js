@@ -43,7 +43,15 @@ app.post("/detect-logo", upload.single("image"), async (req, res) => {
             imageBuffer = req.file.buffer;
         }
 
-        // CASE 2: Image URL
+        // CASE 2: Base64 string
+        else if (req.body.imageBase64) {
+            // Remove data URL prefix if present (data:image/png;base64,)
+            const base64Data = req.body.imageBase64.replace(/^data:image\/\w+;base64,/, '');
+            imageBuffer = Buffer.from(base64Data, 'base64');
+            console.log("✅ Received base64 image");
+        }
+
+        // CASE 3: Image URL
         else if (req.body.imageUrl) {
             const response = await axios.get(req.body.imageUrl, {
                 responseType: "arraybuffer",

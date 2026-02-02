@@ -38,15 +38,30 @@ export async function detectLogo(image) {
         return data;
     }
 
-    // CASE 3: File URI (optional, local file)
-    const fileUri = image?.uri;
-    if (!fileUri) throw new Error("Invalid image input");
+    // CASE 3: File URI (local file)
+    if (image?.uri || image instanceof File) {
+        console.log("📤 Sending local file to backend:", image);
 
-    const form = new FormData();
-    form.append("image", { uri: fileUri, name: "photo.jpg", type: "image/jpeg" });
+        const formData = new FormData();
 
-    const res = await fetch(`${API_BASE_URL}/detect-logo`, { method: "POST", body: form });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data?.error || `Request failed (${res.status})`);
-    return data;
+        // On web, 'image' is a File object
+        if (image instanceof File) {
+            formData.append("image", image, image.name);
+        }
+        // On native, 'image' has a uri property
+        else {
+            formData.append("image", { uri: image.uri, name: "photo.jpg", type: "image/jpeg" });
+        }
+
+        const res = await fetch(`${API_BASE_URL}/detect-logo`, {
+            method: "POST",
+            body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error || `Request failed (${res.status})`);
+
+        console.log("📥 Received logos from backend:", data);
+        return data;
+    }
 }
