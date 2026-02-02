@@ -2,8 +2,15 @@ import express from "express";
 import multer from "multer";
 import vision from "@google-cloud/vision";
 import axios from "axios";
+import cors from "cors";
 
 const app = express();
+
+app.use(cors({
+    origin: "https://darkslateblue-meerkat-555658.hostingersite.com/",
+    methods: ["GET","POST","OPTIONS"],
+}));
+
 const upload = multer();
 
 let client;
