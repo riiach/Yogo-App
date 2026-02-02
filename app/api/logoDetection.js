@@ -1,9 +1,9 @@
 import Constants from "expo-constants"
 
 export async function detectLogo(image) {
-    const API_BASE_URL = Constants.expoConfig.extra.API_BASE_URL || "https://yogo-app.onrender.com" || 'http://115.22.219.116:5000';
+    const API_BASE_URL = Constants.expoConfig.extra.API_BASE_URL || "https://yogo-app.onrender.com";
 
-    console.log("API Base URL:", process.env.EXPO_PUBLIC_API_BASE_URL);
+    console.log("API Base URL:", Constants.expoConfig.extra.API_BASE_URL);
 
     if (!image) throw new Error("Image is required");
 
