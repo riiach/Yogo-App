@@ -38,30 +38,30 @@ export async function detectLogo(image) {
         return data;
     }
 
-    // CASE 3: File URI (local file)
-    if (image?.uri || image instanceof File) {
-        console.log("📤 Sending local file to backend:", image);
+    // CASE 3: Local file (web - has image.file)
+    if (image?.file instanceof File) {
+        console.log("📤 Sending local file:", image.fileName);
 
         const formData = new FormData();
+        formData.append("image", image.file, image.fileName || image.file.name);
 
-        // On web, 'image' is a File object
-        if (image instanceof File) {
-            formData.append("image", image, image.name);
+        try {
+            const res = await fetch(`${API_BASE_URL}/detect-logo`, {
+                method: "POST",
+                body: formData,
+            });
+
+            console.log("📥 Response status:", res.status);
+            const data = await res.json();
+            console.log("📦 Response data:", data);
+
+            if (!res.ok) throw new Error(data?.error || `Request failed (${res.status})`);
+
+            console.log("✅ Received logos:", data.logos?.length || 0);
+            return data;
+        } catch (error) {
+            console.error("❌ Upload error:", error);
+            throw error;
         }
-        // On native, 'image' has a uri property
-        else {
-            formData.append("image", { uri: image.uri, name: "photo.jpg", type: "image/jpeg" });
-        }
-
-        const res = await fetch(`${API_BASE_URL}/detect-logo`, {
-            method: "POST",
-            body: formData,
-        });
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data?.error || `Request failed (${res.status})`);
-
-        console.log("📥 Received logos from backend:", data);
-        return data;
     }
 }

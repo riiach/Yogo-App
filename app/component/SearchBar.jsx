@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
         borderColor: 'gray',
         borderRadius: 25,
         paddingLeft: 20,
+        color: "white",
     },
     button: {
         width: 50,
