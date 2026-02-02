@@ -1,18 +1,19 @@
-import {StyleSheet, Text, View, TextInput, TouchableOpacity, Image} from 'react-native'
-import React from 'react'
-import * as ImagePicker from "expo-image-picker"
-import { COLORS } from "../colors"
-import galleryIcon from "../../assets/images/openGallery.png"
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Platform } from 'react-native';
+import React from 'react';
+import * as ImagePicker from 'expo-image-picker';
+import { COLORS } from "../colors";
+import galleryIcon from "../../assets/images/openGallery.png";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const SearchBar = ({
-    placeholder = "Paste an image URL...",
-    onSubmitUrl,
-    onPickImage,
-    disabled
-}) => {
-    const [value, setValue] = React.useState("")
+                       placeholder = "Paste an image URL...",
+                       onSubmitUrl,
+                       onPickImage,
+                       disabled
+                   }) => {
+    const [value, setValue] = React.useState("");
 
+    // --- Submit URL handler ---
     const handleSubmit = () => {
         const text = value.trim();
         if (!text || disabled) return;
@@ -20,6 +21,7 @@ const SearchBar = ({
         setValue("");
     };
 
+    // --- Pick image from gallery ---
     const handlePickImage = async () => {
         if (disabled) return;
 
@@ -29,16 +31,32 @@ const SearchBar = ({
             return;
         }
 
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 1,
-        });
+        try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images, // backwards-compatible
+                quality: 1,
+            });
 
-        if (!result.canceled) {
-            onPickImage?.(result.assets[0]);
+            if (!result.canceled && result.assets?.length > 0) {
+                const asset = result.assets[0];
+
+                // convert to base64
+                const response = await fetch(asset.uri);
+                const blob = await response.blob();
+                const base64 = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result); // keep full data:image/jpeg;base64,...
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+
+                onPickImage?.({ ...asset, base64 }); // now detectLogo can handle it
+            }
+        } catch (err) {
+            console.log("Image picking failed:", err);
+            alert("Failed to pick image. Please try again.");
         }
     };
-
 
     return (
         <View style={styles.container}>
@@ -65,6 +83,7 @@ const SearchBar = ({
                     <FontAwesome name="send" size={20} color={disabled ? "gray" : "white"} />
                 </TouchableOpacity>
             </View>
+
             <View style={styles.openGallery}>
                 <TouchableOpacity
                     style={styles.uploadBtn}
@@ -80,9 +99,11 @@ const SearchBar = ({
                 </TouchableOpacity>
             </View>
         </View>
-    )
-}
-export default SearchBar
+    );
+};
+
+export default SearchBar;
+
 const styles = StyleSheet.create({
     container: {
         height: 80,
@@ -96,7 +117,7 @@ const styles = StyleSheet.create({
         flex: 14,
         flexDirection: 'row',
         gap: 6,
-        justifyContent: "center"
+        justifyContent: "center",
     },
     openGallery: {
         flex: 2,
@@ -134,4 +155,4 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
     }
-})
+});

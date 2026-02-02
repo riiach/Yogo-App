@@ -8,7 +8,7 @@ const ShareAndSave = ({ link }) => {
         try {
             const result = await Share.share({
                 message: 'AI Detected Your Logo',
-                url: "https://www.riachoi.com/",
+                url: link,
                 title: "Yogo",
             });
             if (result.action === Share.sharedAction) {

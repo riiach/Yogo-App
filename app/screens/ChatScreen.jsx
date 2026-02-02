@@ -1,62 +1,117 @@
-import {FlatList, StyleSheet, Text, View, KeyboardAvoidingView, Platform } from 'react-native'
-import React from 'react'
-import MessageBubble from '../component/MessageBubble'
-import SearchBar from '../component/SearchBar'
+import { FlatList, StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
+import React from "react";
+import MessageBubble from "../component/MessageBubble";
+import SearchBar from "../component/SearchBar";
 import ShareAndSave from "../component/ShareAndSave";
-
-const testMessages = [
-    {
-        id: "1",
-        role: "system",
-        text: "Hi! My name is Yogo. Let me find your logo."
-    },
-    {
-        id: "2",
-        role: "user",
-        text: "thisIsTheLink.comthisIsTheLink.comthisIsTheLink.comthisIsTheLink.com",
-        imageUri: "https://images.pexels.com/photos/10657974/pexels-photo-10657974.jpeg"
-    },
-    {
-        id: "3",
-        role: "system",
-        text: "Yogo is detecting the logo..."
-    },
-    {
-        id: "4",
-        role: "system",
-        text: "This is Nike.",
-        link: "https://www.hyello.gov.uk/",
-        imageUri: "https://images.pexels.com/photos/34719406/pexels-photo-34719406.jpeg"
-    },
-    {
-        id: "5",
-        role: "user",
-        text: "",
-        imageUri: "https://images.pexels.com/photos/10657974/pexels-photo-10657974.jpeg"
-    },
-]
+import { detectLogo } from "../api/logoDetection";
 
 const ChatScreen = () => {
-    const [message, setMessage] = React.useState(testMessages);
-    const latestLink = [...message].reverse().find(item => item.link)?.link;
+    const [message, setMessage] = React.useState([]);
+    const flatListRef = React.useRef(null);
+
+    React.useEffect(() => {
+        if (message.length > 0) {
+            flatListRef.current?.scrollToEnd({ animated: true });
+        }
+    }, [message]);
+
+
+    const latestLink = message
+        .slice()
+        .reverse()
+        .find(item => item.link)?.link;
+
+    function createMessage({ role, text = "", imageUri, link }) {
+        return {
+            id: String(Date.now() + Math.random()),
+            role,
+            text,
+            imageUri,
+            link,
+        };
+    }
+
+    async function handleSubmitUrl(url) {
+        const userMsg = createMessage({ role: "user", text: url });
+        const loadingMsg = createMessage({
+            role: "system",
+            text: "Yogo is detecting the logo...",
+        });
+
+        setMessage(prev => [...prev, userMsg, loadingMsg]);
+
+        try {
+            const result = await detectLogo(url);
+            const logo = result.logos?.[0];
+
+            setMessage(prev => [
+                ...prev.slice(0, -1),
+                createMessage({
+                    role: "system",
+                    text: logo
+                        ? `This looks like ${logo.description}.`
+                        : "Yogo couldn't detect your logo.",
+                    link: logo?.description
+                        ? `https://www.google.com/search?q=${encodeURIComponent(
+                            logo.description
+                        )}`
+                        : undefined,
+                }),
+            ]);
+        } catch (err) {
+            setMessage(prev => [
+                ...prev.slice(0, -1),
+                createMessage({
+                    role: "system",
+                    text: "Something went wrong. Please try again.",
+                }),
+            ]);
+        }
+    }
+
+    async function handlePickImage(asset) {
+        const userMsg = createMessage({ role: "user", imageUri: asset.uri });
+        const loadingMsg = createMessage({ role: "system", text: "Yogo is detecting the logo..." });
+
+        setMessage(prev => [...prev, userMsg, loadingMsg]);
+
+        try {
+            const result = await detectLogo(asset); // Use base64 now
+            const logo = result.logos?.[0];
+
+            setMessage(prev => [
+                ...prev.slice(0, -1),
+                createMessage({
+                    role: "system",
+                    text: logo ? `This looks like ${logo.description}.` : "I couldn’t detect a logo.",
+                    link: logo?.description ? `https://www.google.com/search?q=${encodeURIComponent(logo.description)}` : undefined,
+                }),
+            ]);
+        } catch (err) {
+            setMessage(prev => [
+                ...prev.slice(0, -1),
+                createMessage({ role: "system", text: "Something went wrong. Please try again." }),
+            ]);
+        }
+    }
+
 
     return (
         <KeyboardAvoidingView
             style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
             keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}
         >
-            <ShareAndSave link={latestLink}/>
+            <ShareAndSave link={latestLink} />
+
             <FlatList
                 style={styles.chatContainer}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                    padding: 16,
-                    paddingBottom: 16,
-                }}
+                contentContainerStyle={{ padding: 16 }}
+                ref={flatListRef}
                 data={message}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({item}) => (
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => (
                     <MessageBubble
                         role={item.role}
                         text={item.text}
@@ -64,54 +119,24 @@ const ChatScreen = () => {
                         link={item.link}
                     />
                 )}
-            >
-            </FlatList>
+            />
+
             <SearchBar
-                onSubmitUrl={(url) => setMessage([
-                    {
-                        id: String(Date.now()),
-                        role: "user",
-                        text: url
-                    },
-                    {
-                        id: String(Date.now() + 1),
-                        role: "system",
-                        text: "Yogo is detecting the logo..."
-                    }
-                ])}
-                onPickImage={(asset) => setMessage([
-                    {
-                        id: String(Date.now()),
-                        role: "user",
-                        text: "",
-                        imageUri: asset.uri,
-                    },
-                    {
-                        id: String(Date.now() + 1),
-                        role: "system",
-                        text: "Yogo is detecting the logo..."
-                    }
-                ])}
+                onSubmitUrl={handleSubmitUrl}
+                onPickImage={handlePickImage}
             />
         </KeyboardAvoidingView>
-    )
-}
+    );
+};
+
 export default ChatScreen;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: "column",
-        backgroundColor: "transparent",
         padding: 8,
-    },
-    font: {
-        fontSize: 16,
-        color: "white",
     },
     chatContainer: {
         flex: 1,
-        backgroundColor: "transparent",
-        padding: 4,
-    }
-})
+    },
+});
