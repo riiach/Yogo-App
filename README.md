@@ -1,50 +1,104 @@
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+# Yogo App
 
-## Get started
+Yogo is a cross-platform mobile app built with [Expo](https://expo.dev) and React Native, paired with a companion backend server.
 
-1. Install dependencies
+> This README is a starting template based on the project's current tech stack. Feel free to add a short description of what Yogo actually does (its core purpose/features) at the top.
+
+## Tech Stack
+
+- **Framework:** [Expo](https://expo.dev) `~54` / React Native `0.81.5` / React `19.1.0`
+- **Routing:** [Expo Router](https://docs.expo.dev/router/introduction/) (file-based routing)
+- **Styling:** [NativeWind](https://www.nativewind.dev/) (Tailwind CSS for React Native)
+- **Language:** TypeScript
+- **Navigation:** React Navigation (bottom tabs)
+- **Media / Storage:** `expo-image-picker`, `expo-file-system`, `expo-image`
+- **Environment variables:** `react-native-dotenv`
+- **Backend:** Node-based server (see [`/server`](./server))
+- **Linting / Formatting:** ESLint, Prettier
+
+## Project Structure
+
+```
+Yogo-App/
+├── app/              # App screens & file-based routes (Expo Router)
+├── assets/images/    # Static image assets
+├── server/           # Backend server
+├── app.json          # Expo app configuration
+├── package.json
+├── tailwind.config.js
+└── tsconfig.json
+```
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- npm
+- [Expo Go](https://expo.dev/go) app (for testing on a physical device), or an Android/iOS simulator
+
+### Installation
+
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/riiach/Yogo-App.git
+   cd Yogo-App
+   ```
+
+2. Install dependencies
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Set up environment variables
+
+   Create a `.env` file in the project root (used by `react-native-dotenv`) with any required values, e.g.:
+
+   ```
+   API_URL=http://localhost:3000
+   ```
+
+4. Start the app
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+   From the Expo CLI output you can then open the app in:
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   - a [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+   - an [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+   - an [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+   - [Expo Go](https://expo.dev/go)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Running the Server
 
-## Get a fresh project
+The `server/` directory contains the backend that the app talks to. See the `server` folder for its own setup instructions (install dependencies and start it separately before running the mobile app if the app depends on live API data).
 
-When you're ready, run:
+### Available Scripts
 
-```bash
-npm run reset-project
-```
+| Script | Description |
+| --- | --- |
+| `npm run start` | Start the Expo development server |
+| `npm run android` | Start the app on an Android emulator/device |
+| `npm run ios` | Start the app on an iOS simulator/device |
+| `npm run web` | Run the app in a web browser |
+| `npm run lint` | Run ESLint |
+| `npm run reset-project` | Move the starter code to `app-example/` and reset `app/` to a blank slate |
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Development Notes
 
-## Learn more
+This project uses [file-based routing](https://docs.expo.dev/router/introduction/) via Expo Router — screens are added by creating files inside the `app/` directory.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Learn More
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- [Expo documentation](https://docs.expo.dev/)
+- [Expo Router documentation](https://docs.expo.dev/router/introduction/)
+- [NativeWind documentation](https://www.nativewind.dev/)
 
-## Join the community
+## License
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+No license specified yet — add one (e.g. MIT) if you plan to open-source this project.
