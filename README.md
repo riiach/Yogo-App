@@ -1,9 +1,9 @@
-
+![YOGO]()
 # Yogo App
 
 Yogo is a cross-platform mobile app built with [Expo](https://expo.dev) and React Native, paired with a companion backend server.
 
-> This README is a starting template based on the project's current tech stack. Feel free to add a short description of what Yogo actually does (its core purpose/features) at the top.
+[Test your Yogo here!](https://darkslateblue-meerkat-555658.hostingersite.com/)
 
 ## Tech Stack
 
