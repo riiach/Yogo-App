@@ -1,4 +1,4 @@
-![YOGO]()
+![YOGO](./chrome_jmZSX2ED42.png)
 # Yogo App
 
 Yogo is a cross-platform mobile app built with [Expo](https://expo.dev) and React Native, paired with a companion backend server.
