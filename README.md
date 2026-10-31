@@ -3,7 +3,7 @@
 
 Yogo is a cross-platform mobile app built with [Expo](https://expo.dev) and React Native, paired with a companion backend server.
 
-[Test your Yogo here!](https://darkslateblue-meerkat-555658.hostingersite.com/)
+[Test your Yogo here!](https://ria-yogo.vercel.app/)
 
 ## Tech Stack
 
